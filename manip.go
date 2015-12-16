@@ -8,24 +8,33 @@ import (
 )
 
 func NextSibling(root, ref ast.Node) (result ast.Node) {
-	var done, captureNext bool
+	type state uint
+	const (
+		stateInitial state = iota
+		stateCaptureNext
+		stateDone
+	)
+
+	var st state
 	ast.Inspect(root, func(node ast.Node) bool {
-		if done {
-			return false
-		}
+		switch st {
+		case stateInitial:
+			if node == ref {
+				st++
+				return false
+			}
+			return true
 
-		if node == ref {
-			captureNext = true
-			return false
-		}
-
-		if captureNext {
+		case stateCaptureNext:
 			result = node
-			done = true
+			st++
+			return false
+
+		case stateDone:
 			return false
 		}
 
-		return true
+		panic("unreachable")
 	})
 
 	return
