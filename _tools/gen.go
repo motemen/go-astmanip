@@ -58,6 +58,8 @@ func main() {
 				fmt.Printf("normalize(&n.%s)\n", f.Name())
 			} else if types.Implements(f.Type(), astNodeInterface) {
 				fmt.Printf("if n.%s != nil { NormalizePos(n.%s) }\n", f.Name(), f.Name())
+			} else if sl, ok := f.Type().(*types.Slice); ok && types.Implements(sl.Elem(), astNodeInterface) {
+				fmt.Printf("for _, x := range n.%s { NormalizePos(x) }\n", f.Name())
 			}
 		}
 

@@ -27,7 +27,13 @@ func NormalizePos(node ast.Node) {
 		}
 
 	case *ast.AssignStmt:
+		for _, x := range n.Lhs {
+			NormalizePos(x)
+		}
 		normalize(&n.TokPos)
+		for _, x := range n.Rhs {
+			NormalizePos(x)
+		}
 
 	case *ast.BadDecl:
 		normalize(&n.From)
@@ -55,6 +61,9 @@ func NormalizePos(node ast.Node) {
 
 	case *ast.BlockStmt:
 		normalize(&n.Lbrace)
+		for _, x := range n.List {
+			NormalizePos(x)
+		}
 		normalize(&n.Rbrace)
 
 	case *ast.BranchStmt:
@@ -68,12 +77,21 @@ func NormalizePos(node ast.Node) {
 			NormalizePos(n.Fun)
 		}
 		normalize(&n.Lparen)
+		for _, x := range n.Args {
+			NormalizePos(x)
+		}
 		normalize(&n.Ellipsis)
 		normalize(&n.Rparen)
 
 	case *ast.CaseClause:
 		normalize(&n.Case)
+		for _, x := range n.List {
+			NormalizePos(x)
+		}
 		normalize(&n.Colon)
+		for _, x := range n.Body {
+			NormalizePos(x)
+		}
 
 	case *ast.ChanType:
 		normalize(&n.Begin)
@@ -88,17 +106,26 @@ func NormalizePos(node ast.Node) {
 			NormalizePos(n.Comm)
 		}
 		normalize(&n.Colon)
+		for _, x := range n.Body {
+			NormalizePos(x)
+		}
 
 	case *ast.Comment:
 		normalize(&n.Slash)
 
 	case *ast.CommentGroup:
+		for _, x := range n.List {
+			NormalizePos(x)
+		}
 
 	case *ast.CompositeLit:
 		if n.Type != nil {
 			NormalizePos(n.Type)
 		}
 		normalize(&n.Lbrace)
+		for _, x := range n.Elts {
+			NormalizePos(x)
+		}
 		normalize(&n.Rbrace)
 
 	case *ast.DeclStmt:
@@ -130,6 +157,9 @@ func NormalizePos(node ast.Node) {
 		if n.Doc != nil {
 			NormalizePos(n.Doc)
 		}
+		for _, x := range n.Names {
+			NormalizePos(x)
+		}
 		if n.Type != nil {
 			NormalizePos(n.Type)
 		}
@@ -142,6 +172,9 @@ func NormalizePos(node ast.Node) {
 
 	case *ast.FieldList:
 		normalize(&n.Opening)
+		for _, x := range n.List {
+			NormalizePos(x)
+		}
 		normalize(&n.Closing)
 
 	case *ast.File:
@@ -151,6 +184,18 @@ func NormalizePos(node ast.Node) {
 		normalize(&n.Package)
 		if n.Name != nil {
 			NormalizePos(n.Name)
+		}
+		for _, x := range n.Decls {
+			NormalizePos(x)
+		}
+		for _, x := range n.Imports {
+			NormalizePos(x)
+		}
+		for _, x := range n.Unresolved {
+			NormalizePos(x)
+		}
+		for _, x := range n.Comments {
+			NormalizePos(x)
 		}
 
 	case *ast.ForStmt:
@@ -208,6 +253,9 @@ func NormalizePos(node ast.Node) {
 		}
 		normalize(&n.TokPos)
 		normalize(&n.Lparen)
+		for _, x := range n.Specs {
+			NormalizePos(x)
+		}
 		normalize(&n.Rparen)
 
 	case *ast.GoStmt:
@@ -325,6 +373,9 @@ func NormalizePos(node ast.Node) {
 
 	case *ast.ReturnStmt:
 		normalize(&n.Return)
+		for _, x := range n.Results {
+			NormalizePos(x)
+		}
 
 	case *ast.SelectStmt:
 		normalize(&n.Select)
@@ -435,12 +486,17 @@ func NormalizePos(node ast.Node) {
 		if n.Doc != nil {
 			NormalizePos(n.Doc)
 		}
+		for _, x := range n.Names {
+			NormalizePos(x)
+		}
 		if n.Type != nil {
 			NormalizePos(n.Type)
+		}
+		for _, x := range n.Values {
+			NormalizePos(x)
 		}
 		if n.Comment != nil {
 			NormalizePos(n.Comment)
 		}
-
 	}
 }
