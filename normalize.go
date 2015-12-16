@@ -11,6 +11,7 @@ func normalize(p *token.Pos) {
 	}
 }
 
+// NormalizePos resets all position information of node and its descendants.
 func NormalizePos(node ast.Node) {
 	if node.Pos() == token.NoPos && node.End() == token.NoPos {
 		return
