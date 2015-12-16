@@ -7,54 +7,23 @@ import (
 	"go/ast"
 )
 
-func NextSibling(root, ref ast.Node) (result ast.Node) {
-	type state uint
-	const (
-		stateInitial state = iota
-		stateCaptureNext
-		stateDone
-	)
-
-	var st state
-	ast.Inspect(root, func(node ast.Node) bool {
-		switch st {
-		case stateInitial:
-			if node == ref {
-				st++
-				return false
-			}
-			return true
-
-		case stateCaptureNext:
-			result = node
-			st++
-			return false
-
-		case stateDone:
-			return false
-		}
-
-		panic("unreachable")
-	})
-
-	return
-}
-
-func InsertStmtAfter(root ast.Node, node, ref ast.Stmt) {
+// InsertStmtAfter inserts a statement stmt after ref, inside the root tree.
+// Specifically it updates []ast.Stmt inside BlockStmt, CaseClause, or CommClause.
+func InsertStmtAfter(root ast.Node, stmt, ref ast.Stmt) {
 	var done bool
 	ast.Inspect(root, func(n ast.Node) bool {
 		if done {
 			return false
 		}
 
-		stmt, ok := n.(ast.Stmt)
+		parentStmt, ok := n.(ast.Stmt)
 		if !ok {
 			return true
 		}
 
 		var found bool
-		ast.Inspect(stmt, func(n ast.Node) bool {
-			if n == stmt {
+		ast.Inspect(parentStmt, func(n ast.Node) bool {
+			if n == parentStmt {
 				return true
 			}
 			if n == ref {
@@ -63,7 +32,7 @@ func InsertStmtAfter(root ast.Node, node, ref ast.Stmt) {
 			return false
 		})
 		if found {
-			insertStmtAfter(stmt, node, ref)
+			insertStmtAfter(parentStmt, stmt, ref)
 			done = true
 		}
 
