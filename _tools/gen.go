@@ -55,7 +55,9 @@ func main() {
 		for i := 0; i < s.NumFields(); i++ {
 			f := s.Field(i)
 			if types.Identical(f.Type(), tokenPosType) {
-				fmt.Printf("normalize(t.%s)\n", f.Name())
+				fmt.Printf("normalize(&n.%s)\n", f.Name())
+			} else if types.Implements(f.Type(), astNodeInterface) {
+				fmt.Printf("if n.%s != nil { NormalizePos(n.%s) }\n", f.Name(), f.Name())
 			}
 		}
 
