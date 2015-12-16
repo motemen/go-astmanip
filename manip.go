@@ -1,5 +1,6 @@
 // TODO(motemen): tests
 
+// Package astmanip provides miscellaneous functions for go/ast manipulations.
 package astmanip
 
 import (
